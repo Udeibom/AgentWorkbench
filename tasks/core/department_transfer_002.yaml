@@ -1,0 +1,56 @@
+task_id: department_transfer_002
+title: Department Transfer with Stale Permission Reconciliation
+description: |
+  Ticket tck-102: Role Transition for Jane Doe (emp-004).
+  Jane transferred from Finance to Engineering. Please update her access permissions for her new role as Software Engineer.
+ticket_id: tck-102
+difficulty: medium
+tags:
+  - department_transfer
+  - access_reconciliation
+  - security_policy
+initial_state_fixture: default
+
+verifier_rules:
+  - rule_type: check_access_granted
+    description: Employee emp-004 must be granted engineering-standard access
+    target_id: emp-004
+    params:
+      access_group_id: engineering-standard
+    weight: 0.30
+
+  - rule_type: check_access_revoked
+    description: Employee emp-004 legacy finance-admin access MUST be revoked
+    target_id: emp-004
+    params:
+      access_group_id: finance-admin
+    weight: 0.30
+
+  - rule_type: check_access_revoked
+    description: Employee emp-004 legacy finance-standard access MUST be revoked
+    target_id: emp-004
+    params:
+      access_group_id: finance-standard
+    weight: 0.20
+
+  - rule_type: check_ticket_status
+    description: Ticket tck-102 must be resolved
+    target_id: tck-102
+    expected_value: resolved
+    weight: 0.20
+
+  - rule_type: check_unrelated_state_preserved
+    description: Preservation of unrelated employee permissions
+    is_forbidden_check: true
+    weight: 0.20
+
+scoring_config:
+  state_correctness_weight: 0.70
+  policy_compliance_weight: 0.15
+  safety_preservation_weight: 0.10
+  ticket_closure_weight: 0.05
+
+known_failure_modes:
+  - over_permissioning
+  - policy_misunderstanding
+  - failure_to_verify

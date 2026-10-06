@@ -1,0 +1,35 @@
+task_id: app_access_request_005
+title: Application Access Request
+description: |
+  Ticket tck-105: Application Access Request for Bob Builder (emp-002).
+  Bob is a full-time Finance Manager who requires Corporate VPN Access (vpn-employee) for remote work. Grant access and resolve ticket.
+ticket_id: tck-105
+difficulty: easy
+tags:
+  - access_request
+  - vpn
+initial_state_fixture: default
+
+verifier_rules:
+  - rule_type: check_access_granted
+    description: Employee emp-002 must be granted vpn-employee access
+    target_id: emp-002
+    params:
+      access_group_id: vpn-employee
+    weight: 0.60
+
+  - rule_type: check_ticket_status
+    description: Ticket tck-105 must be resolved
+    target_id: tck-105
+    expected_value: resolved
+    weight: 0.40
+
+scoring_config:
+  state_correctness_weight: 0.70
+  policy_compliance_weight: 0.15
+  safety_preservation_weight: 0.10
+  ticket_closure_weight: 0.05
+
+known_failure_modes:
+  - premature_completion
+  - wrong_permission

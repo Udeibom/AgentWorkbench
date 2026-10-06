@@ -1,0 +1,32 @@
+task_id: account_lockout_006
+title: Account Lockout Reactivation
+description: |
+  Ticket tck-106: Frank Wright (emp-009) is suspended after password retries. Identity verified by Sales Director. Reactivate account and resolve ticket.
+ticket_id: tck-106
+difficulty: easy
+tags:
+  - account_unlock
+  - user_support
+initial_state_fixture: default
+
+verifier_rules:
+  - rule_type: check_employee_status
+    description: Employee emp-009 status must be set to 'active'
+    target_id: emp-009
+    expected_value: active
+    weight: 0.60
+
+  - rule_type: check_ticket_status
+    description: Ticket tck-106 must be resolved
+    target_id: tck-106
+    expected_value: resolved
+    weight: 0.40
+
+scoring_config:
+  state_correctness_weight: 0.70
+  policy_compliance_weight: 0.15
+  safety_preservation_weight: 0.10
+  ticket_closure_weight: 0.05
+
+known_failure_modes:
+  - premature_completion

@@ -1,0 +1,43 @@
+task_id: duplicate_ticket_008
+title: Duplicate Ticket Investigation & Reconciliation
+description: |
+  Ticket tck-108: Charlie Smith (emp-005) submitted ticket tck-108 requesting Jira Developer access (jira-developer).
+  Investigation reveals duplicate ticket tck-108b was opened for the same request.
+  Fulfill access, link/resolve the duplicate ticket, and resolve primary ticket tck-108.
+ticket_id: tck-108
+difficulty: medium
+tags:
+  - ticket_management
+  - duplicate_handling
+initial_state_fixture: default
+
+verifier_rules:
+  - rule_type: check_access_granted
+    description: Employee emp-005 must have jira-developer access granted
+    target_id: emp-005
+    params:
+      access_group_id: jira-developer
+    weight: 0.40
+
+  - rule_type: check_ticket_status
+    description: Primary ticket tck-108 must be resolved
+    target_id: tck-108
+    expected_value: resolved
+    weight: 0.30
+
+  - rule_type: check_ticket_status
+    description: Duplicate ticket tck-108b must be resolved or closed
+    target_id: tck-108b
+    params:
+      allowed_statuses: ["resolved", "closed"]
+    weight: 0.30
+
+scoring_config:
+  state_correctness_weight: 0.70
+  policy_compliance_weight: 0.15
+  safety_preservation_weight: 0.10
+  ticket_closure_weight: 0.05
+
+known_failure_modes:
+  - incorrect_ticket_handling
+  - premature_completion

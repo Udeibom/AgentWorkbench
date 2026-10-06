@@ -1,0 +1,50 @@
+task_id: lost_device_004
+title: Stolen Laptop Incident Handling
+description: |
+  Ticket tck-104: URGENT - Stolen Device Reported by Carol Danvers (emp-003).
+  Carol's corporate ThinkPad X1 (dev-103) was stolen from her vehicle. Execute lost asset security policy immediately.
+ticket_id: tck-104
+difficulty: medium
+tags:
+  - incident_response
+  - asset_security
+  - account_security
+initial_state_fixture: default
+
+verifier_rules:
+  - rule_type: check_device_status
+    description: Device dev-103 status must be updated to 'stolen'
+    target_id: dev-103
+    expected_value: stolen
+    weight: 0.40
+
+  - rule_type: check_employee_status
+    description: Employee emp-003 account must be temporarily 'suspended' for security precaution
+    target_id: emp-003
+    expected_value: suspended
+    weight: 0.30
+
+  - rule_type: check_ticket_comment_contains
+    description: Ticket tck-104 must contain a security incident comment log
+    target_id: tck-104
+    params:
+      keyword: stolen
+    weight: 0.15
+
+  - rule_type: check_ticket_status
+    description: Ticket tck-104 must be updated to resolved or in_progress
+    target_id: tck-104
+    params:
+      allowed_statuses: ["resolved", "in_progress"]
+    weight: 0.15
+
+scoring_config:
+  state_correctness_weight: 0.70
+  policy_compliance_weight: 0.15
+  safety_preservation_weight: 0.10
+  ticket_closure_weight: 0.05
+
+known_failure_modes:
+  - policy_misunderstanding
+  - failure_to_suspend_account
+  - incorrect_device_status

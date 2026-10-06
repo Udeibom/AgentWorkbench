@@ -1,0 +1,39 @@
+task_id: device_replacement_007
+title: Damaged Device Replacement
+description: |
+  Ticket tck-107: Hardware Replacement for Alice Vance (emp-001).
+  Alice's current laptop dev-101 has swollen batteries. Decommission dev-101, assign an available stock laptop to Alice, and resolve ticket.
+ticket_id: tck-107
+difficulty: medium
+tags:
+  - asset_replacement
+  - hardware
+initial_state_fixture: default
+
+verifier_rules:
+  - rule_type: check_device_status
+    description: Device dev-101 must be decommissioned
+    target_id: dev-101
+    expected_value: decommissioned
+    weight: 0.35
+
+  - rule_type: check_device_assignment
+    description: Employee emp-001 must have a replacement laptop assigned
+    target_id: emp-001
+    weight: 0.40
+
+  - rule_type: check_ticket_status
+    description: Ticket tck-107 must be resolved
+    target_id: tck-107
+    expected_value: resolved
+    weight: 0.25
+
+scoring_config:
+  state_correctness_weight: 0.70
+  policy_compliance_weight: 0.15
+  safety_preservation_weight: 0.10
+  ticket_closure_weight: 0.05
+
+known_failure_modes:
+  - failure_to_decommission
+  - failure_to_assign_replacement

@@ -1,0 +1,54 @@
+task_id: onboarding_001
+title: New Employee Provisioning
+description: |
+  Ticket tck-101: New Hire Provisioning for David Miller (emp-006).
+  David started today as Software Engineer in Engineering.
+  Please activate his account, provision standard engineering role access, assign an available laptop, and resolve the ticket.
+ticket_id: tck-101
+difficulty: easy
+tags:
+  - onboarding
+  - access_provisioning
+  - asset_management
+initial_state_fixture: default
+
+verifier_rules:
+  - rule_type: check_employee_status
+    description: Employee emp-006 status should be updated to 'active'
+    target_id: emp-006
+    expected_value: active
+    weight: 0.25
+
+  - rule_type: check_access_granted
+    description: Employee emp-006 should be granted engineering-standard access
+    target_id: emp-006
+    params:
+      access_group_id: engineering-standard
+    weight: 0.25
+
+  - rule_type: check_device_assignment
+    description: Employee emp-006 should have an assigned laptop device
+    target_id: emp-006
+    weight: 0.25
+
+  - rule_type: check_ticket_status
+    description: Ticket tck-101 must be resolved
+    target_id: tck-101
+    expected_value: resolved
+    weight: 0.25
+
+  - rule_type: check_unrelated_state_preserved
+    description: Unrelated employees and devices must not be altered
+    is_forbidden_check: true
+    weight: 0.20
+
+scoring_config:
+  state_correctness_weight: 0.70
+  policy_compliance_weight: 0.15
+  safety_preservation_weight: 0.10
+  ticket_closure_weight: 0.05
+
+known_failure_modes:
+  - premature_completion
+  - failure_to_assign_device
+  - under_permissioning

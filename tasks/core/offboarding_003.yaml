@@ -1,0 +1,57 @@
+task_id: offboarding_003
+title: Employee Offboarding Procedure
+description: |
+  Ticket tck-103: Offboarding request for Eve Adams (emp-007) in Sales.
+  Eve departed the company today. Execute complete offboarding checklist according to company security policy.
+ticket_id: tck-103
+difficulty: medium
+tags:
+  - offboarding
+  - security
+  - asset_management
+initial_state_fixture: default
+
+verifier_rules:
+  - rule_type: check_employee_status
+    description: Employee emp-007 status must be set to 'terminated'
+    target_id: emp-007
+    expected_value: terminated
+    weight: 0.30
+
+  - rule_type: check_access_revoked
+    description: Employee emp-007 slack-general access must be revoked
+    target_id: emp-007
+    params:
+      access_group_id: slack-general
+    weight: 0.25
+
+  - rule_type: check_access_revoked
+    description: Employee emp-007 vpn-employee access must be revoked
+    target_id: emp-007
+    params:
+      access_group_id: vpn-employee
+    weight: 0.25
+
+  - rule_type: check_device_status
+    description: Device dev-106 assigned to emp-007 must be returned/unassigned (in_stock or decommissioned)
+    target_id: dev-106
+    params:
+      allowed_statuses: ["in_stock", "decommissioned"]
+    weight: 0.10
+
+  - rule_type: check_ticket_status
+    description: Ticket tck-103 must be resolved
+    target_id: tck-103
+    expected_value: resolved
+    weight: 0.10
+
+scoring_config:
+  state_correctness_weight: 0.70
+  policy_compliance_weight: 0.15
+  safety_preservation_weight: 0.10
+  ticket_closure_weight: 0.05
+
+known_failure_modes:
+  - under_permissioning
+  - failure_to_unassign_device
+  - incomplete_offboarding
